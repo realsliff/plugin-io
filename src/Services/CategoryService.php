@@ -27,7 +27,6 @@ class CategoryService
 {
     use MemoryCache;
     use LoadResultFields;
-
     /**
      * @var CategoryRepositoryContract
      */
@@ -278,6 +277,22 @@ class CategoryService
         /** @var CategoryDetails $catDetail */
         foreach ($category->details as $catDetail) {
             if ($catDetail->lang == $lang) {
+                return $catDetail;
+            }
+        }
+
+        return null;
+    }
+
+    public function getDetails2($category, $lang)
+    {
+        if ($category === null) {
+            return null;
+        }
+
+        /** @var CategoryDetails $catDetail */
+        foreach ($category->details as $catDetail) {
+            if ($catDetail->lang == $lang && $catDetail->plentyId == Utils::getPlentyId()) {
                 return $catDetail;
             }
         }
@@ -646,6 +661,11 @@ class CategoryService
          */
         foreach ($this->currentCategoryTree as $lvl => $category) {
             if ($filterCategories == false || $category->right === 'all' || $loggedIn || Utils::isAdminPreview()) {
+                $detail = $this->getDetails2($category, Utils::getLang());
+                if (isset($detail) )
+                {
+                    $category->details = [$detail];
+                }
                 array_push($hierarchy, $category);
             } else {
                 $hierarchy = [];
@@ -660,7 +680,6 @@ class CategoryService
             $lang = Utils::getLang();
             array_push($hierarchy, $this->currentItem['texts'][$lang]);
         }
-
         return $hierarchy;
     }
 
