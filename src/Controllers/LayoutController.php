@@ -199,10 +199,12 @@ abstract class LayoutController extends Controller
 
         // Render the received plugin
         try {
-            return $this->twig->render(
+            $content = $this->twig->render(
                 $templateContainer->getTemplate(),
                 $templateData
             );
+            return $this->renderVueComponents($content);
+
         } catch (\Exception $e) {
             $this->getLogger(__CLASS__)->error(
                 "IO::Debug.LayoutController_cannotRenderTwigTemplate",
@@ -215,6 +217,83 @@ abstract class LayoutController extends Controller
         }
 
         return '';
+    }
+
+    private function nodeProcOpen(&$pipes)
+    {
+        $processInputOutputConfig = array(
+            0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
+            1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
+        );
+
+        $scriptFilePath = "/var/www/m77/master.plentymarkets.com/http/documents/plugins/Ceres/resources/js/src/app/vue-server-renderer.js";
+
+        if (!file_exists($scriptFilePath)) return false;
+
+        return proc_open(
+            "node $scriptFilePath",
+            $processInputOutputConfig,
+            $pipes,
+            null, //If null, the process is launched by default where PHP is launched
+            null //If null, the process got the same env variables has the one of the parent
+        );
+    }
+
+    private function readFromPipeAndClose($pipe)
+    {
+        $content = stream_get_contents($pipe);
+        fclose($pipe);
+
+        return $content;
+    }
+
+    private function writeIntoPipeAndCloseIt($pipe, $content)
+    {
+        fwrite($pipe, $content);
+        fclose($pipe);
+    }
+
+    private function waitForNodeProgramToExit($nodeProcess)
+    {
+        $status = proc_get_status($nodeProcess);
+
+        while (1 === $status['running']) {
+            $status = proc_get_status($nodeProcess);
+        }
+    }
+
+    public function renderVueComponents($originalDom)
+    {
+        $nodeProcess = $this->nodeProcOpen($pipes);
+
+        $domWithRenderedVueComponents = '';
+
+        if (is_resource($nodeProcess)) {
+            // $pipes now looks like this:
+            // 0 => writeable handle connected to child stdin
+            // 1 => readable handle connected to child stdout
+            // Any error output will be appended to /tmp/error-output.txt
+
+            $this->writeIntoPipeAndCloseIt($pipes[0], $originalDom);
+
+            $this->waitForNodeProgramToExit($nodeProcess);
+
+            $domWithRenderedVueComponents = $this->readFromPipeAndClose($pipes[1]);
+
+            proc_close($nodeProcess);
+
+            if ('ERROR: Fail to server-side render' === $domWithRenderedVueComponents
+                || false === $domWithRenderedVueComponents
+            ) {
+                $domWithRenderedVueComponents = $originalDom;
+            }
+        }
+
+//        $whitelinesToBeReplaced = '/\>[\s]*\</'; //This is meant to replace useless extra whitelines
+
+//        $content = preg_replace($whitelinesToBeReplaced, '><', $domWithRenderedVueComponents);
+
+        return $domWithRenderedVueComponents;
     }
 
     /**
