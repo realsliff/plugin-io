@@ -289,11 +289,13 @@ abstract class LayoutController extends Controller
             }
         }
 
-//        $whitelinesToBeReplaced = '/\>[\s]*\</'; //This is meant to replace useless extra whitelines
+        $whitelinesToBeReplaced = '/\>[\s]*\</'; //This is meant to replace useless extra whitelines
 
+        $content = $domWithRenderedVueComponents;
 //        $content = preg_replace($whitelinesToBeReplaced, '><', $domWithRenderedVueComponents);
+        $content = substr($content, 0, strpos($content, "html>") + 5);
 
-        return $domWithRenderedVueComponents;
+        return $content;
     }
 
     /**
