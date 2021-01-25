@@ -1,5 +1,28 @@
 # Release Notes für IO
 
+## v5.0.20 (2021-01-19) <a href="https://github.com/plentymarkets/plugin-io/compare/5.0.19...5.0.20" target="_blank" rel="noopener"><b>Übersicht aller Änderungen</b></a>
+
+### Behoben
+
+- Bei der Anzeige des Hinweistextes für Ausfuhrlieferungen kam es seit dem 01.01.2021 zu Problemen. Dieses Verhalten wurde behoben.
+- In der Retourenhistorie wurden Versandkosten als Artikel aufgelistet. Dieses Verhalten wurde behoben.
+
+## v5.0.19 (2021-01-05) <a href="https://github.com/plentymarkets/plugin-io/compare/5.0.18...5.0.19" target="_blank" rel="noopener"><b>Übersicht aller Änderungen</b></a>
+
+### Geändert
+
+- Um die Performance des Webshops zu verbessern, wurde die Caching-Zeit der Shop-URLs, die mit Version 5.0.7 eingebaut wurde, von 5 Minuten auf 10 Minuten erhöht.
+
+## v5.0.18 (2021-01-04) <a href="https://github.com/plentymarkets/plugin-io/compare/5.0.17...5.0.18" target="_blank" rel="noopener"><b>Übersicht aller Änderungen</b></a>
+
+### Hinzugefügt 
+
+- Im Schritt **Suche** des Assistenten kann nun eingestellt werden, ob die Webshop-Suche einen **Und**- oder einen **Oder**-Suchoperator verwendet.
+
+### Geändert
+
+- Die Zusatzkosten von Merkmalen sind nun in den Auftragssummen enthalten.
+
 ## v5.0.17 (2020-12-21) <a href="https://github.com/plentymarkets/plugin-io/compare/5.0.16...5.0.17" target="_blank" rel="noopener"><b>Übersicht aller Änderungen</b></a>
 
 ### Geändert
