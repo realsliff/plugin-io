@@ -52,6 +52,17 @@ class CheckNotFound extends Middleware
             }
         }
 
+        $paths = [
+            'https://cdn02.plentymarkets.com/jpx0tvae1136/plugin/31/ceres/css/ceres-icons.css',
+            'https://cdn02.plentymarkets.com/jpx0tvae1136/plugin/31/ceres/css/ceres-base.css',
+            'https://cdn02.plentymarkets.com/jpx0tvae1136/plugin/31/ceres/js/dist/ceres-client.min.js'
+        ];
+
+        $response->header('Link', implode(',', array_map(function($path) {
+            $as = substr($path, -3) === '.js' ? 'script' : 'style';
+            return '<' . $path . '>; rel=preload; as=' . $as;
+        }, $paths)));
+
         return $response;
     }
 }
