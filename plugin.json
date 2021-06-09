@@ -1,6 +1,6 @@
 {
     "version"           : "5.0.32",
-    "name"              : "IO-ARUS",
+    "name"              : "IO",
     "marketplaceName"   : {"de": "IO","en": "IO"},
     "license"           : "AGPL-3.0",
     "pluginIcon"        : "icon_plugin_xs.png",
