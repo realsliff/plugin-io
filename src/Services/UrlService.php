@@ -307,4 +307,12 @@ class UrlService
     {
         return in_array($route, RouteConfig::getEnabledRoutes()) || RouteConfig::getCategoryId($route) > 0;
     }
+    public function getBmoCanonicalUrl($lang = null, $ignoreCanonical = false) {
+        $canonical = $this->getCanonicalURL($lang);
+        preg_match("/([^_]*_[\d]+)_[\d]+\/?$/", $canonical, $match);
+        if (count($match) == 2) {
+            $canonical = $match[1] . "/";
+        }
+        return $canonical;
+    }
 }
